@@ -90,12 +90,12 @@ Pacotes em trânsito são mantidos em uma lista com alocação dinâmica. Cada n
 
 | Operação              | Estrutura       | Complexidade | Observação                        |
 |-----------------------|-----------------|:------------:|-----------------------------------|
-| `adicionarFila`       | Fila (array)    | O(1)         | Insere no fim diretamente         |
-| `transmitirPacote`    | Fila (array)    | O(1)         | Remove do início diretamente      |
-| `mostrarFila`         | Fila (array)    | O(n)         | Percorre todos os elementos       |
-| `adicionarErro`       | Pilha (array)   | O(1)         | Push no topo                      |
-| `retransmitirPacote`  | Pilha (array)   | O(1)         | Pop do topo                       |
-| `mostrarPilha`        | Pilha (array)   | O(n)         | Percorre do topo à base           |
+| `adicionarFila`       | Fila (vetor)    | O(1)         | Insere no fim diretamente         |
+| `transmitirPacote`    | Fila (vetor)    | O(1)         | Remove do início diretamente      |
+| `mostrarFila`         | Fila (vetor)    | O(n)         | Percorre todos os elementos       |
+| `adicionarErro`       | Pilha (vetor)   | O(1)         | Push no topo                      |
+| `retransmitirPacote`  | Pilha (vetor)   | O(1)         | Pop do topo                       |
+| `mostrarPilha`        | Pilha (vetor)   | O(n)         | Percorre do topo à base           |
 | `inserirPacoteLista`  | Lista encadeada | O(1)         | Inserção na cabeça                |
 | `buscarPacote`        | Lista encadeada | O(n)         | Busca linear por ID               |
 | `removerPacote`       | Lista encadeada | O(n)         | Percorre até encontrar o nó       |
@@ -104,7 +104,9 @@ Pacotes em trânsito são mantidos em uma lista com alocação dinâmica. Cada n
 ### Observações
 
 - As operações críticas (inserção/remoção nas pontas) são todas **O(1)**.
-- O principal gargalo é a **busca por ID na lista**: O(n) no pior caso. Substituir por uma hash table tornaria busca e remoção **O(1)** amortizado.
+
+- O principal gargalo é a **busca por ID na lista**: O(n) no pior caso. Substituir por uma hash table tornaria busca e remoção **O(1)** amortizado — em vez de percorrer nó por nó, a hash table calcula diretamente a posição do pacote a partir do ID, sem varredura. O custo extra ocasional (colisões) existe, mas é raro o suficiente para manter a média em O(1).
+
 - A fila usa array estático sem reuso dos índices liberados. Uma **fila circular** (`% FILA_MAX`) eliminaria esse desperdício mantendo O(1).
 
 ---
@@ -125,4 +127,4 @@ Porque o número de pacotes em trânsito varia continuamente. A lista encadeada 
 
 **4. Qual estrutura melhor representa atraso de fila?**
 
-A Fila de Prioridade, implementada via heap binário. Diferente da fila FIFO, que trata todos os pacotes igualmente pela ordem de chegada, a fila de prioridade organiza o atendimento pelo peso ou atraso acumulado de cada pacote — permitindo que itens críticos sejam processados antes e garantindo que nenhum pacote fique preso indefinidamente na fila. O custo é O(log n) para inserção e remoção, mais alto que o O(1) da fila simples, mas necessário para um controle real do atraso em redes com tráfego variável.
+A estrutura que melhor representa atraso de fila é a própria fila. Isso ocorre porque o atraso em redes geralmente acontece quando muitos pacotes aguardam processamento ou transmissão ao mesmo tempo. Quanto maior a quantidade de elementos armazenados na fila, maior será o tempo de espera dos pacotes que estão no final dela. Esse fenômeno é conhecido em redes como latência de enfileiramento (queue delay), sendo um dos principais fatores que afetam desempenho e velocidade de transmissão em sistemas computacionais e redes de comunicação.
